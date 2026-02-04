@@ -1,0 +1,15 @@
+{
+  "originHash" : "d2102cb084af7adea84ef10a376d9b0471e482a959dd0487d5271a85ec30754a",
+  "pins" : [
+    {
+      "identity" : "fitsheet",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vagamagajaga/FitSheet",
+      "state" : {
+        "branch" : "main",
+        "revision" : "fdb6fe81124fb4344b05f46cb26c14699f662e93"
+      }
+    }
+  ],
+  "version" : 3
+}
