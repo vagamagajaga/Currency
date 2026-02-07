@@ -153,7 +153,7 @@ private extension CurrencyService {
             let name = $0.book.replacingOccurrences(of: "usdc_", with: "").uppercased()
             
             guard let image = provideImageResourse(from: name),
-                  let rate = Double($0.bid)
+                  let rate = Double($0.bid)?.moneyFormat()
             else {
                 return nil
             }

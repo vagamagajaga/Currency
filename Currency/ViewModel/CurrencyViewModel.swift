@@ -20,32 +20,27 @@ final class CurrencyViewModel: ObservableObject {
     @Published var error: Error?
     
     private let service: ICurrencyService = CurrencyService(networkService: NetworkService())
-
-    private var isSwitched: Bool = false
     
     init() {
-        let dollar = CurrencyModel(name: "USDc", rate: 1, image: .usa)
-        
-        self.mainModel = CurrencyFieldModel(currency: dollar, amount: nil, isMain: true)
-        self.secondModel = CurrencyFieldModel(currency: dollar, amount: nil, isMain: true)
+        self.mainModel = CurrencyFieldModel(currency: .init(), isMain: true)
+        self.secondModel = CurrencyFieldModel(currency: .init())
     }
 }
 
 extension CurrencyViewModel {
     
     func updateModel(for isMainCurrency: Bool) {
+        guard let rate = actualCurrency?.rate else { return }
+        
         if isMainCurrency {
-            if isSwitched {
-                mainModel.amount = (secondModel.amount ?? 0) * mainModel.currency.rate
-            } else {
-                secondModel.amount = (mainModel.amount ?? 0) * secondModel.currency.rate
-            }
+            secondModel.amount = (mainModel.amount ?? 0) * rate
         } else {
-            if isSwitched {
-                secondModel.amount = (mainModel.amount ?? 0) / mainModel.currency.rate
-            } else {
-                mainModel.amount = (secondModel.amount ?? 0) / secondModel.currency.rate
-            }
+            mainModel.amount = (secondModel.amount ?? 0) / rate
+        }
+        
+        if mainModel.amount == nil || secondModel.amount == nil {
+            mainModel.amount = nil
+            secondModel.amount = nil
         }
     }
     
@@ -58,13 +53,6 @@ extension CurrencyViewModel {
         }
         mainModel.amount = nil
         secondModel.amount = nil
-    }
-    
-    func switchModels() {
-        isSwitched.toggle()
-        let temp = mainModel
-        mainModel = secondModel
-        secondModel = temp
     }
 }
 
@@ -95,12 +83,3 @@ extension CurrencyViewModel {
         }
     }
 }
-
-// TODELETE: Mock
-
-
-//let euro = CurrencyModel(name: "EUR", rate: 0.8, image: .eur)
-//let arg = CurrencyModel(name: "ARS", rate: 11.2, image: .arg)
-//let bra = CurrencyModel(name: "BRL", rate: 4.8, image: .bra)
-//let col = CurrencyModel(name: "COP", rate: 2.8, image: .col)
-//let mex = CurrencyModel(name: "MXN", rate: 21.8, image: .mex)

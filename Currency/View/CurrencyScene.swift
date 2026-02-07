@@ -19,6 +19,7 @@ struct CurrencyScene: View {
     
     @ObservedObject var viewModel: CurrencyViewModel
     
+    @State private var isSwitched: Bool = false
     @State private var isSheetVisible: Bool = false
     
     var body: some View {
@@ -105,37 +106,51 @@ extension CurrencyScene {
 }
 
 extension CurrencyScene {
+    
+    @ViewBuilder
     func fieldsBlock() -> some View {
         VStack(spacing: 16) {
-            CurrencyField(
-                model: $viewModel.mainModel
-            ) {
-                isSheetVisible = true
+            if isSwitched {
+                secondField()
+                mainField()
+            } else {
+                mainField()
+                secondField()
             }
-            .onChange(of: viewModel.mainModel.amount) { _, _ in
-                guard let focusedField, focusedField == .first else { return }
-                
-                viewModel.updateModel(for: viewModel.mainModel.isMain)
-            }
-            .focused($focusedField, equals: Fields.first)
-            
-            CurrencyField(
-                model: $viewModel.secondModel,
-            ) {
-                isSheetVisible = true
-            }
-            .onChange(of: viewModel.secondModel.amount) { _, _ in
-                guard let focusedField, focusedField == .second else { return }
-                
-                viewModel.updateModel(for: viewModel.secondModel.isMain)
-            }
-            .focused($focusedField, equals: Fields.second)
         }
+    }
+    
+    func mainField() -> some View {
+        CurrencyField(
+            model: $viewModel.mainModel
+        ) {
+            isSheetVisible = true
+        }
+        .onChange(of: viewModel.mainModel.amount) { _, _ in
+            guard let focusedField, focusedField == .first else { return }
+            
+            viewModel.updateModel(for: true)
+        }
+        .focused($focusedField, equals: Fields.first)
+    }
+    
+    func secondField() -> some View {
+        CurrencyField(
+            model: $viewModel.secondModel,
+        ) {
+            isSheetVisible = true
+        }
+        .onChange(of: viewModel.secondModel.amount) { _, _ in
+            guard let focusedField, focusedField == .second else { return }
+            
+            viewModel.updateModel(for: false)
+        }
+        .focused($focusedField, equals: Fields.second)
     }
     
     func switchButton() -> some View {
         Button {
-            viewModel.switchModels()
+            isSwitched.toggle()
         } label: {
             Image(.switch)
         }
@@ -146,7 +161,7 @@ extension CurrencyScene {
     func provideCourseText() -> String {
         guard let actualCurrency = viewModel.actualCurrency else { return "" }
         
-        return "1 USDc = \(actualCurrency.formattedCourse) \(actualCurrency.name)"
+        return "1 USDc = \(actualCurrency.stringRate) \(actualCurrency.name)"
     }
 }
 

@@ -11,6 +11,18 @@ struct CurrencyModel {
     let name: String
     let rate: Double
     let image: ImageResource
+    
+    init() {
+        self.name = "USDc"
+        self.rate = 1
+        self.image = .usa
+    }
+    
+    init(name: String, rate: Double, image: ImageResource) {
+        self.name = name
+        self.rate = rate
+        self.image = image
+    }
 }
 
 extension CurrencyModel: Identifiable {
@@ -18,7 +30,7 @@ extension CurrencyModel: Identifiable {
         name
     }
     
-    var formattedCourse: String {
+    var stringRate: String {
         let numberFormatter = NumberFormatter()
         numberFormatter.minimumFractionDigits = 2
         numberFormatter.maximumFractionDigits = 2

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CurrencyField: View {
-    
+    @FocusState private var isAmountFocused: Bool
+
     @Binding var model: CurrencyFieldModel
         
     private let action: (() -> Void)?
@@ -34,16 +35,7 @@ struct CurrencyField: View {
                 courseChangeButton()
             }
             
-            Spacer()
-                .frame(maxWidth: .infinity)
-            
-            TextField(
-                "$",
-                value: $model.amount,
-                format: .number,
-            )
-            .bold()
-            .keyboardType(.decimalPad)
+            amountView()
         }
         .padding(.vertical, 23)
         .padding(.horizontal, 16)
@@ -55,7 +47,7 @@ struct CurrencyField: View {
     }
 }
 
-extension CurrencyField {
+private extension CurrencyField {
     func courseChangeButton() -> some View {
         Button {
             action?()
@@ -65,10 +57,37 @@ extension CurrencyField {
                 .bold()
         }
     }
+    
+    func amountView() -> some View {
+        HStack(spacing: .zero) {
+            Spacer()
+                .frame(maxWidth: .infinity)
+            
+            if model.amount != nil {
+                Text("$")
+                    .bold()
+            }
+            
+            TextField(
+                "$",
+                value: $model.amount,
+                format: .number,
+            )
+            .focused($isAmountFocused)
+            .fixedSize(horizontal: true, vertical: false)
+            .bold()
+            .keyboardType(.decimalPad)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isAmountFocused = true
+        }
+    }
 }
 
 let dollar = CurrencyModel(name: "USDc", rate: 1, image: .usa)
-let dollarModel = CurrencyFieldModel(currency: dollar, amount: 0)
+let dollarModel = CurrencyFieldModel(currency: dollar, amount: 0, isMain: true)
+let dollarModel2 = CurrencyFieldModel(currency: dollar, amount: 0)
 
 #Preview {
     ZStack {
@@ -76,7 +95,7 @@ let dollarModel = CurrencyFieldModel(currency: dollar, amount: 0)
         
         VStack {
             CurrencyField(model: .constant(dollarModel))
-            CurrencyField(model: .constant(dollarModel))
+            CurrencyField(model: .constant(dollarModel2))
         }
         .padding(16)
     }
