@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CurrencySheetScene: View {
 
-    @State var chosenCurrency: CurrencyModel
+    @State var chosenCurrency: CurrencyModel?
 
     let currencies: [CurrencyModel]
     let action: ((CurrencyModel) -> Void)?
@@ -54,7 +54,8 @@ extension CurrencySheetScene {
             
             Spacer()
             
-            if model.id == chosenCurrency.id {
+            if let id = chosenCurrency?.id,
+               id == model.id {
                 Image(.mark)
             } else {
                 Circle()
@@ -71,8 +72,8 @@ extension CurrencySheetScene {
     }
 }
 
-let dollar1 = CurrencyModel(name: "USDc", course: 1, image: .usa)
-let euro1 = CurrencyModel(name: "EUR", course: 0.8, image: .eur)
+let dollar1 = CurrencyModel(name: "USDc", rate: 1, image: .usa)
+let euro1 = CurrencyModel(name: "EUR", rate: 0.8, image: .eur)
 
 #Preview {
     CurrencySheetScene(chosenCurrency: dollar1, currencies: [dollar1, euro1]) { _ in

@@ -67,7 +67,7 @@ extension CurrencyField {
     }
 }
 
-let dollar = CurrencyModel(name: "USDc", course: 1, image: .usa)
+let dollar = CurrencyModel(name: "USDc", rate: 1, image: .usa)
 let dollarModel = CurrencyFieldModel(currency: dollar, amount: 0)
 
 #Preview {

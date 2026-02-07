@@ -42,14 +42,26 @@ struct CurrencyScene: View {
         }
         .onAppear {
             Task {
-                await viewModel.fetchData()
+                viewModel.fetchCurrencies()
             }
         }
     }
 }
 
 extension CurrencyScene {
+    
+    @ViewBuilder
     func content() -> some View {
+        if viewModel.isLoading {
+            ProgressView()
+        } else if let error = viewModel.error {
+            Text("Error: \(error.localizedDescription)")
+        } else {
+            exhangeView()
+        }
+    }
+    
+    func exhangeView() -> some View {
         VStack(
             alignment: .leading,
             spacing: 24
@@ -132,7 +144,9 @@ extension CurrencyScene {
 
 extension CurrencyScene {
     func provideCourseText() -> String {
-        "1 USDc = \(viewModel.actualCurrency.formattedCourse) \(viewModel.actualCurrency.name)"
+        guard let actualCurrency = viewModel.actualCurrency else { return "" }
+        
+        return "1 USDc = \(actualCurrency.formattedCourse) \(actualCurrency.name)"
     }
 }
 

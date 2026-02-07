@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CurrencyModel {
     let name: String
-    let course: Double
+    let rate: Double
     let image: ImageResource
 }
 
@@ -23,7 +23,7 @@ extension CurrencyModel: Identifiable {
         numberFormatter.minimumFractionDigits = 2
         numberFormatter.maximumFractionDigits = 2
         
-        return numberFormatter.string(from: NSNumber(value: course)) ?? ""
+        return numberFormatter.string(from: NSNumber(value: rate)) ?? ""
     }
 }
 
@@ -48,12 +48,3 @@ extension CurrencyFieldModel: Equatable {
         lhs.amount == rhs.amount && lhs.currency.name == rhs.currency.name
     }
 }
-
-//extension CurrencyFieldModel {
-//    var stringAmount: String {
-//        let numberFormatter = NumberFormatter()
-//        numberFormatter.decimalSeparator = ","
-//        
-//        return numberFormatter.string(from: NSNumber(value: amount)) ?? ""
-//    }
-//}
